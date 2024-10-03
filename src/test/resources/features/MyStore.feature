@@ -17,4 +17,9 @@ Scenario: Validación del precio de un producto con usuario y clave validos
     When me logueo con mi usuario "dalnoelarosa1@gmail.com" y clave "70123148D@"
     Then Entonces espero que la automatización falle al no llegar a la pantalla principal
 
-
+  @CatInex
+  Scenario: Navegar a una categoría inexistente
+    Given estoy en la página de la tienda
+    And me logueo con mi usuario "dalnoelarosa1@gmail.com" y clave "70123148D@"
+    When navego a la categoría "Autos"
+    Then Entonces espero que la automatización falle y no continúe

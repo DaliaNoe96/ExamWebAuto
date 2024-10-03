@@ -48,7 +48,7 @@ public class MyStoreStepDef {
 
     @And("Y agrego {int} unidades del primer producto al carrito")
     public void yAgregoUnidadesDelPrimerProductoAlCarrito(int arg0) {
-        
+
     }
 
     @Then("Entonces valido en el popup la confirmación del producto agregado")
