@@ -1,16 +1,18 @@
 package com.nttdata.steps;
 
 import com.nttdata.page.LoginMyStorePage;
-import com.nttdata.page.LoginPage;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.helpers.Util;
 import org.openqa.selenium.interactions.Actions;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.time.Duration;
+import java.util.NoSuchElementException;
 
 import static com.nttdata.page.LoginMyStorePage.*;
 
@@ -23,7 +25,7 @@ public class LoginMyStoreStep {
     }
 
     public void escribirUsuario (String usuario) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10) );
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5) );
         wait.until(ExpectedConditions.presenceOfElementLocated(userInput));
 
         WebElement usuarioInput = driver.findElement(userInput);
@@ -31,7 +33,7 @@ public class LoginMyStoreStep {
     }
 
     public void escribirClave(String clave) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10) );
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1) );
         wait.until(ExpectedConditions.presenceOfElementLocated(claveInput));
 
         WebElement claveInput = driver.findElement(LoginMyStorePage.claveInput);
@@ -43,23 +45,46 @@ public class LoginMyStoreStep {
    //     boton.click();
     }
 
+    public String getMessaggeError(){
+        WebElement text = driver.findElement(messageError);
+        return text.getText();
+    }
+
     public void clickClothes(String clothes) {
         WebElement ele = driver.findElement(By.xpath("//*[@id=\"category-3\"]/a"));
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10) );
-   //     WebElement usuarioInput = driver.findElement(LoginMyStorePage.userInput);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5) );
         wait.until(ExpectedConditions.presenceOfElementLocated(clickClothes));
-        //this.driver.findElement(LoginMyStorePage.clickClothes).click();
+
         Actions actions = new Actions(driver);
         actions.moveToElement(ele).perform();
-//
-        System.out.println("variable "+ clickMs);
     }
 
     public void clickMs(String men) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         wait.until(ExpectedConditions.presenceOfElementLocated(clickMs));
 
         this.driver.findElement(clickMs).click();
-
     }
-}
+
+    public boolean buscarMenu(String cate){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5) );
+        wait.until(ExpectedConditions.presenceOfElementLocated(clickClothes));
+
+        boolean found = false;
+
+        List<WebElement> lista1= driver.findElements(menus);
+
+        for (WebElement menuItem : lista1) {
+            String lista = menuItem.getText();
+
+            // Comparar el texto del elemento con 'cate'
+            if (lista.equalsIgnoreCase(cate)) {
+                menuItem.click(); // Hacer clic en el elemento encontrado
+                return true; // Retornar true si se encontró y se hizo clic
+            }
+        }
+
+        return false;
+    }
+ }

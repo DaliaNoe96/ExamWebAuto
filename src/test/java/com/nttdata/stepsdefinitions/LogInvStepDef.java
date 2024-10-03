@@ -4,6 +4,7 @@ import com.nttdata.steps.LoginMyStoreStep;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 
 import static com.nttdata.core.DriverManager.getDriver;
@@ -27,8 +28,11 @@ public class LogInvStepDef {
 
     }
 
-    @Then("Entonces espero que la automatización falle al no llegar a la pantalla principal")
-    public void entoncesEsperoQueLaAutomatizacionFalleAlNoLlegarALaPantallaPrincipal() {
+    @Then("Entonces espero que la automatización falle con el mensaje {string}")
+    public void entoncesEsperoQueLaAutomatizacionFalleAlNoLlegarALaPantallaPrincipal(String messageError) throws InterruptedException {
+        Thread.sleep(2000);
+        LoginMyStoreStep mensaje = new LoginMyStoreStep(driver);
+        Assertions.assertEquals(messageError, mensaje.getMessaggeError());
     }
 
 

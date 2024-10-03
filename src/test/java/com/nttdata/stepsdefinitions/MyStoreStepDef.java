@@ -1,10 +1,15 @@
 package com.nttdata.stepsdefinitions;
 
+import com.nttdata.steps.CarritoSteps;
+import com.nttdata.steps.ModalItemSteps;
 import com.nttdata.steps.LoginMyStoreStep;
+import com.nttdata.steps.MenSteps;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 //import org.openqa.selenium.WebDriverWait;
 
@@ -41,33 +46,59 @@ public class MyStoreStepDef {
         LoginMyStoreStep login = new LoginMyStoreStep(driver);
         login.clickClothes(Clothes);
         login.clickMs(Men);
-
         Thread.sleep(1000);
-
     }
 
-    @And("Y agrego {int} unidades del primer producto al carrito")
-    public void yAgregoUnidadesDelPrimerProductoAlCarrito(int arg0) {
-
+    @And("Y agrego unidades del primer producto al carrito")
+    public void yAgregoUnidadesDelPrimerProductoAlCarrito() throws InterruptedException {
+        MenSteps item = new MenSteps(driver);
+        item.SelectItem();
+        Thread.sleep(1000);
+        item.AmountItem();
+        item.AddToCar();
+        Thread.sleep(1000);
     }
 
     @Then("Entonces valido en el popup la confirmación del producto agregado")
     public void entoncesValidoEnElPopupLaConfirmacionDelProductoAgregado() {
+        ModalItemSteps title = new ModalItemSteps(driver);
+        Assertions.assertEquals("\uE876Producto añadido correctamente a su carrito de compra", title.getResponseItem());
     }
 
-    @And("Y valido en el popup que el monto total sea calculado correctamente")
-    public void yValidoEnElPopupQueElMontoTotalSeaCalculadoCorrectamente() {
+    @And("Y valido en el popup que el monto total sea {string}")
+    public void yValidoEnElPopupQueElMontoTotalSeaCalculadoCorrectamente(String total) {
+        ModalItemSteps totalAmount = new ModalItemSteps(driver);
+        Assertions.assertEquals(total, totalAmount.getTotalAmount());
     }
 
     @And("Cuando finalizo la compra")
-    public void cuandoFinalizoLaCompra() {
+    public void cuandoFinalizoLaCompra() throws InterruptedException {
+        ModalItemSteps btnFInalizar = new ModalItemSteps(driver);
+        btnFInalizar.clickFinalizar();
+        Thread.sleep(3000);
     }
 
-    @Then("Entonces valido el titulo de la pagina del carrito")
-    public void entoncesValidoElTituloDeLaPaginaDelCarrito() {
+    @Then("Entonces valido el titulo de la pagina del carrito {string}")
+    public void entoncesValidoElTituloDeLaPaginaDelCarrito(String title) {
+        CarritoSteps titlePage = new CarritoSteps(driver);
+        Assertions.assertEquals(title, titlePage.getTitleCarritoPage());
     }
 
-    @And("Y vuelvo a validar el calculo de precios en el carrito")
-    public void yVuelvoAValidarElCalculoDePreciosEnElCarrito() {
+    @And("Y vuelvo a validar el calculo de precios en el carrito sea {string}")
+    public void yVuelvoAValidarElCalculoDePreciosEnElCarrito(String total) {
+        CarritoSteps totalPage = new CarritoSteps(driver);
+        Assertions.assertEquals(total, totalPage.getTotalAmount());
     }
+
+    @Then("Cuando navego a la categoria {string} y espero que la automatización falle al no encontrar el menú")
+    public void cuandoNavegoALaCategoria(String menu) {
+        LoginMyStoreStep menuItem = new LoginMyStoreStep(driver);
+
+        boolean menuFound = menuItem.buscarMenu(menu);
+        assert !menuFound : "El menú '" + menu + "' no fue encontrado.";
+
+        System.out.println("Navegando a la categoría: " + menu);
+    }
+
+
 }
